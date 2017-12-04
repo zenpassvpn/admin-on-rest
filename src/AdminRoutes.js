@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Children, Component } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -8,35 +8,33 @@ import getContext from 'recompose/getContext';
 import CrudRoute from './CrudRoute';
 import NotFound from './mui/layout/NotFound';
 import Restricted from './auth/Restricted';
-import { AUTH_GET_PERMISSIONS } from './auth';
+import { AUTH_CHECK } from './auth';
 import { declareResources as declareResourcesAction } from './actions';
 import getMissingAuthClientError from './util/getMissingAuthClientError';
 
 export class AdminRoutes extends Component {
     componentDidMount() {
-        this.initializeResources(this.props.children);
+        this.initializeResources(this.props);
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.initializeResources(nextProps.children);
-    }
-
-    initializeResources(children) {
+    async initializeResources(props) {
+        const { authClient, children, declareResources, resources } = props;
+        let newResources;
         if (typeof children === 'function') {
-            if (!this.props.authClient) {
+            if (!authClient) {
                 throw new Error(getMissingAuthClientError('Admin'));
             }
 
-            this.props.authClient(AUTH_GET_PERMISSIONS).then(permissions => {
-                const resources = children(permissions)
-                    .filter(node => node)
-                    .map(node => node.props);
-                this.props.declareResources(resources);
-            });
+            const permissions = await authClient(AUTH_CHECK);
+            newResources = children(permissions)
+                .filter(node => node)
+                .map(node => node.props);
         } else {
-            const resources =
-                React.Children.map(children, ({ props }) => props) || [];
-            this.props.declareResources(resources);
+            newResources = Children.map(children, ({ props }) => props) || [];
+        }
+
+        if (resources !== newResources) {
+            declareResources(newResources);
         }
     }
 

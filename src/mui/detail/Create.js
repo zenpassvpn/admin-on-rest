@@ -9,7 +9,6 @@ import Title from '../layout/Title';
 import { crudCreate as crudCreateAction } from '../../actions/dataActions';
 import DefaultActions from './CreateActions';
 import translate from '../../i18n/translate';
-import withPermissionsFilteredChildren from '../../auth/withPermissionsFilteredChildren';
 
 class Create extends Component {
     getBasePath() {
@@ -112,8 +111,7 @@ function mapStateToProps(state) {
 
 const enhance = compose(
     connect(mapStateToProps, { crudCreate: crudCreateAction }),
-    translate,
-    withPermissionsFilteredChildren
+    translate
 );
 
 export default enhance(Create);

@@ -37,8 +37,12 @@ export class Restricted extends Component {
     }
 
     checkAuthentication(params) {
-        const { userCheck, authParams, location } = params;
-        userCheck(authParams, location && location.pathname);
+        const { userCheck, authParams, location, match } = params;
+        userCheck(
+            authParams,
+            location && location.pathname,
+            match && match.params
+        );
     }
 
     // render the child even though the AUTH_CHECK isn't finished (optimistic rendering)

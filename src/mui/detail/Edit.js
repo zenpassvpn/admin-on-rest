@@ -12,7 +12,6 @@ import {
 } from '../../actions/dataActions';
 import DefaultActions from './EditActions';
 import translate from '../../i18n/translate';
-import withPermissionsFilteredChildren from '../../auth/withPermissionsFilteredChildren';
 
 export class Edit extends Component {
     constructor(props) {
@@ -178,8 +177,7 @@ const enhance = compose(
         crudGetOne: crudGetOneAction,
         crudUpdate: crudUpdateAction,
     }),
-    translate,
-    withPermissionsFilteredChildren
+    translate
 );
 
 export default enhance(Edit);

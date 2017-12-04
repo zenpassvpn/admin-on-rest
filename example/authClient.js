@@ -1,10 +1,4 @@
-import {
-    AUTH_GET_PERMISSIONS,
-    AUTH_LOGIN,
-    AUTH_LOGOUT,
-    AUTH_ERROR,
-    AUTH_CHECK,
-} from 'admin-on-rest'; // eslint-disable-line import/no-unresolved
+import { AUTH_LOGIN, AUTH_LOGOUT, AUTH_ERROR, AUTH_CHECK } from 'admin-on-rest'; // eslint-disable-line import/no-unresolved
 
 // Authenticatd by default
 export default (type, params) => {
@@ -40,12 +34,11 @@ export default (type, params) => {
             : Promise.resolve();
     }
     if (type === AUTH_CHECK) {
-        return localStorage.getItem('not_authenticated')
-            ? Promise.reject()
-            : Promise.resolve();
-    }
+        const notAuthenticated = localStorage.getItem('not_authenticated');
+        if (notAuthenticated) {
+            return Promise.reject();
+        }
 
-    if (type === AUTH_GET_PERMISSIONS) {
         const role = localStorage.getItem('role');
         return Promise.resolve(role);
     }

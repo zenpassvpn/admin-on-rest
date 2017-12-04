@@ -12,9 +12,9 @@ export const userLogin = (payload, pathName) => ({
 
 export const USER_CHECK = 'AOR/USER_CHECK';
 
-export const userCheck = (payload, pathName) => ({
+export const userCheck = (payload, pathName, routeParams) => ({
     type: USER_CHECK,
-    payload,
+    payload: { ...payload, routeParams },
     meta: { auth: true, pathName },
 });
 

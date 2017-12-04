@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import FormField from '../mui/form/FormField';
 import getContext from 'recompose/getContext';
 
-import { AUTH_GET_PERMISSIONS } from './types';
+import { AUTH_CHECK } from './types';
 import resolvePermissions from './resolvePermissions';
 
 export class SwitchPermissionsComponent extends Component {
@@ -40,7 +40,7 @@ export class SwitchPermissionsComponent extends Component {
                 })
             ) || [];
 
-        const permissions = await authClient(AUTH_GET_PERMISSIONS, {
+        const permissions = await authClient(AUTH_CHECK, {
             record,
             resource,
         });

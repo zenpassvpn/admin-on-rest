@@ -2,6 +2,7 @@
 import 'babel-polyfill';
 import React from 'react';
 import { render } from 'react-dom';
+import { Route } from 'react-router-dom';
 
 import { Admin, Resource, Delete, englishMessages } from 'admin-on-rest'; // eslint-disable-line import/no-unresolved
 import jsonRestClient from 'aor-json-rest-client';
@@ -9,6 +10,8 @@ import frenchMessages from 'aor-language-french';
 
 import addUploadFeature from './addUploadFeature';
 
+import { Dashboard } from './dashboard';
+import MyPage from './myPage';
 import { PostList, PostCreate, PostEdit, PostShow, PostIcon } from './posts';
 import {
     CommentList,
@@ -73,11 +76,13 @@ const renderResources = permissions => [
 
 render(
     <Admin
+        dashboard={Dashboard}
         authClient={authClient}
         restClient={delayedRestClient}
         title="Example Admin"
         locale="en"
         messages={messages}
+        customRoutes={[<Route path="/mypage" component={MyPage} />]}
     >
         {renderResources}
     </Admin>,

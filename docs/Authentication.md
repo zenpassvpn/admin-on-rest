@@ -300,13 +300,19 @@ If you add [custom pages](./Actions.md), of if you [create an admin app from scr
 import { withRouter } from 'react-router-dom';
 import { Restricted } from 'admin-on-rest';
 
-const MyPage = ({ location }) =>
-    <Restricted authParams={{ foo: 'bar' }} location={location} />
-        <div>
-            ...
-        </div>
-    </Restricted>
-}
+const MyPage = ({ location }) => {
+    // You can provide whatever you need here. This object will be the
+    // payload received by the authClient
+    const authParams = { route: location.pathname };
+
+    return (
+        <Restricted authParams={authParams} location={location}>
+            <div>
+                ...
+            </div>
+        </Restricted>
+    );
+};
 
 export default withRouter(MyPage);
 ```
