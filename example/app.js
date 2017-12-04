@@ -38,6 +38,39 @@ const delayedRestClient = (type, resource, params) =>
         )
     );
 
+const renderResources = permissions => [
+    <Resource
+        name="posts"
+        list={PostList}
+        create={PostCreate}
+        edit={PostEdit}
+        show={PostShow}
+        remove={Delete}
+        icon={PostIcon}
+    />,
+    <Resource
+        name="comments"
+        list={CommentList}
+        create={CommentCreate}
+        edit={CommentEdit}
+        show={CommentShow}
+        remove={Delete}
+        icon={CommentIcon}
+    />,
+    permissions ? (
+        <Resource
+            name="users"
+            list={UserList}
+            create={UserCreate}
+            edit={UserEdit}
+            remove={Delete}
+            icon={UserIcon}
+            show={UserShow}
+        />
+    ) : null,
+    <Resource name="tags" />,
+];
+
 render(
     <Admin
         authClient={authClient}
@@ -46,38 +79,7 @@ render(
         locale="en"
         messages={messages}
     >
-        {permissions => [
-            <Resource
-                name="posts"
-                list={PostList}
-                create={PostCreate}
-                edit={PostEdit}
-                show={PostShow}
-                remove={Delete}
-                icon={PostIcon}
-            />,
-            <Resource
-                name="comments"
-                list={CommentList}
-                create={CommentCreate}
-                edit={CommentEdit}
-                show={CommentShow}
-                remove={Delete}
-                icon={CommentIcon}
-            />,
-            permissions ? (
-                <Resource
-                    name="users"
-                    list={UserList}
-                    create={UserCreate}
-                    edit={UserEdit}
-                    remove={Delete}
-                    icon={UserIcon}
-                    show={UserShow}
-                />
-            ) : null,
-            <Resource name="tags" />,
-        ]}
+        {renderResources}
     </Admin>,
     document.getElementById('root')
 );

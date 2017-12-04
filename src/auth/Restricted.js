@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { userCheck as userCheckAction } from '../actions/authActions';
+import { getPermissions } from '../reducer/admin/auth';
 
 /**
  * Restrict access to children
@@ -53,6 +54,11 @@ export class Restricted extends Component {
     }
 }
 
-export default connect(null, {
+const mapStateToProps = (state, props) => {
+    const permissions = getPermissions(state, props.authParams);
+    return { permissions };
+};
+
+export default connect(mapStateToProps, {
     userCheck: userCheckAction,
 })(Restricted);

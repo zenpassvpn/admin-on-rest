@@ -17,6 +17,10 @@ export class AdminRoutes extends Component {
         this.initializeResources(this.props.children);
     }
 
+    componentWillReceiveProps(nextProps) {
+        this.initializeResources(nextProps.children);
+    }
+
     initializeResources(children) {
         if (typeof children === 'function') {
             if (!this.props.authClient) {
