@@ -6,6 +6,7 @@ import {
     hideNotification,
 } from '../../actions/notificationActions';
 import {
+    USER_CHECK_SUCCESS,
     USER_LOGIN,
     USER_LOGIN_LOADING,
     USER_LOGIN_SUCCESS,
@@ -52,7 +53,16 @@ export default authClient => {
             }
             case USER_CHECK: {
                 try {
-                    yield call(authClient, AUTH_CHECK, payload);
+                    const userCheckPayload = yield call(
+                        authClient,
+                        AUTH_CHECK,
+                        payload
+                    );
+                    yield put({
+                        type: USER_CHECK_SUCCESS,
+                        payload: userCheckPayload,
+                        meta: payload,
+                    });
                 } catch (e) {
                     yield call(authClient, AUTH_LOGOUT);
                     yield put(

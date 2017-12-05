@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import auth from './auth';
 import resources, { getResources as innerGetResources } from './resource';
 import loading from './loading';
 import notification from './notification';
@@ -8,6 +9,7 @@ import saving from './saving';
 import ui from './ui';
 
 export default combineReducers({
+    auth,
     resources,
     loading,
     notification,

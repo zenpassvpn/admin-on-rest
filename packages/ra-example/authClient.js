@@ -1,10 +1,4 @@
-import {
-    AUTH_GET_PERMISSIONS,
-    AUTH_LOGIN,
-    AUTH_LOGOUT,
-    AUTH_ERROR,
-    AUTH_CHECK,
-} from 'react-admin'; // eslint-disable-line import/no-unresolved
+import { AUTH_LOGIN, AUTH_LOGOUT, AUTH_ERROR, AUTH_CHECK } from 'react-admin'; // eslint-disable-line import/no-unresolved
 
 // Authenticatd by default
 export default (type, params) => {
@@ -13,17 +7,17 @@ export default (type, params) => {
         if (username === 'login' && password === 'password') {
             localStorage.removeItem('not_authenticated');
             localStorage.removeItem('role');
-            return Promise.resolve();
+            return Promise.resolve({ username });
         }
         if (username === 'user' && password === 'password') {
             localStorage.setItem('role', 'user');
             localStorage.removeItem('not_authenticated');
-            return Promise.resolve();
+            return Promise.resolve({ username });
         }
         if (username === 'admin' && password === 'password') {
             localStorage.setItem('role', 'admin');
             localStorage.removeItem('not_authenticated');
-            return Promise.resolve();
+            return Promise.resolve({ username });
         }
         localStorage.setItem('not_authenticated', true);
         return Promise.reject();
@@ -40,12 +34,12 @@ export default (type, params) => {
             : Promise.resolve();
     }
     if (type === AUTH_CHECK) {
-        return localStorage.getItem('not_authenticated')
-            ? Promise.reject()
-            : Promise.resolve();
-    }
+        const not_authenticated = localStorage.getItem('not_authenticated');
 
-    if (type === AUTH_GET_PERMISSIONS) {
+        if (not_authenticated) {
+            return Promise.reject();
+        }
+
         const role = localStorage.getItem('role');
         return Promise.resolve(role);
     }

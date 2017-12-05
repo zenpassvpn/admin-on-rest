@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Children, Component } from 'react';
 import PropTypes from 'prop-types';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -8,7 +8,7 @@ import getContext from 'recompose/getContext';
 import CrudRoute from './CrudRoute';
 import NotFound from './mui/layout/NotFound';
 import Restricted from './auth/Restricted';
-import { AUTH_GET_PERMISSIONS } from './auth';
+import { AUTH_CHECK } from './auth';
 import { declareResources as declareResourcesAction } from './actions';
 
 export class AdminRoutes extends Component {
@@ -20,7 +20,7 @@ export class AdminRoutes extends Component {
         if (typeof children === 'function') {
             let permissions;
             if (this.props.authClient) {
-                permissions = await this.props.authClient(AUTH_GET_PERMISSIONS);
+                permissions = await this.props.authClient(AUTH_CHECK);
             }
 
             const childrenResult = children(permissions);
@@ -37,7 +37,7 @@ export class AdminRoutes extends Component {
             this.props.declareResources(finalResources);
         } else {
             const resources =
-                React.Children.map(children, ({ props }) => props) || [];
+                Children.map(children, ({ props }) => props) || [];
             this.props.declareResources(resources);
         }
     }

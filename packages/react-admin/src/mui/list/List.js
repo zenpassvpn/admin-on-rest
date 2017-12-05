@@ -23,7 +23,6 @@ import { changeListParams as changeListParamsAction } from '../../actions/listAc
 import translate from '../../i18n/translate';
 import removeKey from '../../util/removeKey';
 import defaultTheme from '../defaultTheme';
-import withChildrenAsFunction from '../withChildrenAsFunction';
 
 const styles = {
     noResults: { padding: 20 },
@@ -354,8 +353,7 @@ const enhance = compose(
         changeListParams: changeListParamsAction,
         push: pushAction,
     }),
-    translate,
-    withChildrenAsFunction
+    translate
 );
 
 export default enhance(List);
