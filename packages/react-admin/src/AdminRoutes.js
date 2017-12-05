@@ -1,6 +1,6 @@
 import React, { Children, Component } from 'react';
 import PropTypes from 'prop-types';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import compose from 'recompose/compose';
 import getContext from 'recompose/getContext';
@@ -8,21 +8,32 @@ import getContext from 'recompose/getContext';
 import CrudRoute from './CrudRoute';
 import NotFound from './mui/layout/NotFound';
 import Restricted from './auth/Restricted';
-import { AUTH_CHECK } from './auth';
-import { declareResources as declareResourcesAction } from './actions';
+import {
+    declareResources as declareResourcesAction,
+    userCheck as userCheckAction,
+} from './actions';
+import { getPermissions } from './reducer/admin/auth';
 
 export class AdminRoutes extends Component {
     componentDidMount() {
-        return this.initializeResources(this.props.children);
+        this.getPermissions();
     }
 
-    async initializeResources(children) {
-        if (typeof children === 'function') {
-            let permissions;
-            if (this.props.authClient) {
-                permissions = await this.props.authClient(AUTH_CHECK);
-            }
+    async componentWillReceiveProps(nextProps) {
+        if (nextProps.permissions !== this.props.permissions) {
+            await this.initializeResources(nextProps);
+        }
+    }
 
+    getPermissions = () => {
+        const { userCheck, location, match } = this.props;
+        userCheck({}, location && location.pathname, match && match.params);
+    };
+
+    async initializeResources(props) {
+        const { children, declareResources, permissions } = props;
+
+        if (typeof children === 'function') {
             const childrenResult = children(permissions);
             let resources = childrenResult;
 
@@ -34,11 +45,11 @@ export class AdminRoutes extends Component {
                 .filter(node => node)
                 .map(node => node.props);
 
-            this.props.declareResources(finalResources);
+            declareResources(finalResources);
         } else {
             const resources =
                 Children.map(children, ({ props }) => props) || [];
-            this.props.declareResources(resources);
+            declareResources(resources);
         }
     }
 
@@ -128,6 +139,7 @@ const mapStateToProps = state => ({
     resources: Object.keys(state.admin.resources).map(
         key => state.admin.resources[key].props
     ),
+    permissions: getPermissions(state, '@ra/resources'),
 });
 
 export default compose(
@@ -136,5 +148,7 @@ export default compose(
     }),
     connect(mapStateToProps, {
         declareResources: declareResourcesAction,
-    })
+        userCheck: userCheckAction,
+    }),
+    withRouter
 )(AdminRoutes);
